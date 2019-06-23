@@ -1,0 +1,216 @@
+@extends('frontend.layouts.app')
+
+@section('title')
+{{$$module_name_singular->name}}
+@stop
+
+
+@section('content')
+<div class="page-header page-header-small">
+
+    <div class="page-header-image" data-parallax="true" style="background-image:url('{{asset($$module_name_singular->featured_image)}}');">
+    </div>
+    <div class="content-center">
+        <div class="container">
+            <h1 class="title">
+                {{$$module_name_singular->name}}
+            </h1>
+
+            @include('flash::message')
+
+            <!-- Errors block -->
+            @include('frontend.includes.errors')
+            <!-- / Errors block -->
+
+            <div class="text-center">
+                <a href="#pablo" class="btn btn-primary btn-icon btn-round">
+                    <i class="fab fa-facebook-square"></i>
+                </a>
+                <a href="#pablo" class="btn btn-primary btn-icon btn-round">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#pablo" class="btn btn-primary btn-icon btn-round">
+                    <i class="fab fa-google-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    @php
+                    $post_details_url = route('frontend.posts.show',[encode_id($$module_name_singular->id), $$module_name_singular->slug]);
+                    @endphp
+                    <img class="card-img-top" src="{{$$module_name_singular->featured_image}}" alt="{{$$module_name_singular->name}}">
+                    <div class="card-body">
+                        <a href="{{$post_details_url}}">
+                            <h4 class="card-title">{{$$module_name_singular->name}}</h4>
+                        </a>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            {{$$module_name_singular->author_name}}
+                        </h6>
+                        <hr>
+                        <p class="card-text">
+                            {!!$$module_name_singular->content!!}
+                        </p>
+                        <hr>
+
+                        <p class="card-text">
+                            <a href="{{route('frontend.categories.show', [encode_id($$module_name_singular->category_id), $$module_name_singular->category->slug])}}" class="badge badge-primary">{{$$module_name_singular->category_name}}</a>
+                        </p>
+
+                        <p class="card-text">
+                            @foreach ($$module_name_singular->tags as $tag)
+                            <a href="{{route('frontend.tags.show', [encode_id($tag->id), $tag->slug])}}" class="badge badge-warning">{{$tag->name}}</a>
+                            @endforeach
+                        </p>
+
+                        <p class="card-text">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="text-center">
+                                        <a href="#" class="btn btn-primary btn-icon btn-round">
+                                            <i class="fab fa-facebook-square"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-primary btn-icon btn-round">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-primary btn-icon btn-round">
+                                            <i class="fab fa-google-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </p>
+
+                        <p class="card-text">
+                            Comments (Total {{$$module_name_singular->comments->count()}})
+                            <br>
+                            @foreach ($$module_name_singular->comments as $comment)
+                            <blockquote>
+                                <p class="blockquote blockquote-primary">
+                                    <a href="{{route('frontend.comments.show', encode_id($comment->id))}}">
+                                        <!-- <i class="now-ui-icons ui-2_chat-round"></i> -->
+                                        <i class="far fa-comment-alt"></i>
+                                    </a>
+                                    {{$comment->name}}
+                                    <br>
+
+                                    {{$comment->comment}}
+
+                                    <br>
+                                    <br>
+
+                                    <small>
+                                        - {{$comment->user_name}}
+                                    </small>
+                                </p>
+
+                            </blockquote>
+                            @endforeach
+                        </p>
+                        <div class="row justify-content-md-center">
+                                @auth
+                                <div class="col-4 align-self-center">
+                                    <p>
+                                        <a class="btn btn-primary btn-lg btn-block" data-toggle="collapse" href="#commentForm" role="button" aria-expanded="false" aria-controls="commentForm"><i class="far fa-comment-alt"></i> Write new comment</a>
+                                    </p>
+                                </div>
+                                <div class="row justify-content-md-center">
+                                    <div class="col-8 align-self-center">
+                                        <div class="collapse multi-collapse" id="commentForm">
+                                            <div class="card card-body">
+                                                <p>
+                                                    Your comment will be in the moderation queue. If your comment will be approved, you will get notification and it will be displayed here.
+                                                    <br>
+                                                    Please submit once & wait till published.
+                                                </p>
+
+                                                {{ html()->form('POST', route("frontend.comments.store"))->class('form')->open() }}
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <?php
+                                                            $field_name = 'name';
+                                                            $field_lable = "Subject";
+                                                            $field_placeholder = $field_lable;
+                                                            $required = "required";
+                                                            ?>
+                                                            {{ html()->label($field_lable, $field_name) }} {!! fielf_required($required) !!}
+                                                            {{ html()->text($field_name)->placeholder($field_placeholder)->class('form-control')->attributes(["$required"]) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <?php
+                                                            $field_name = 'comment';
+                                                            $field_lable = "Details Comment";
+                                                            $field_placeholder = $field_lable;
+                                                            $required = "required";
+                                                            ?>
+                                                            {{ html()->label($field_lable, $field_name) }} {!! fielf_required($required) !!}
+                                                            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class('form-control')->attributes(["$required"]) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <?php
+                                                $field_name = 'post_id';
+                                                $field_lable = label_case($field_name);
+                                                $field_placeholder = $field_lable;
+                                                $required = "required";
+                                                ?>
+                                                {{ html()->hidden($field_name)->value(encode_id($$module_name_singular->id))->attributes(["$required"]) }}
+
+                                                <?php
+                                                $field_name = 'user_id';
+                                                $field_lable = label_case($field_name);
+                                                $field_placeholder = $field_lable;
+                                                $required = "required";
+                                                ?>
+                                                {{ html()->hidden($field_name)->value(encode_id(auth()->user()->id))->attributes(["$required"]) }}
+
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            {{ html()->button($text = "<i class='fas fa-save'></i> Submit", $type = 'submit')->class('btn btn-success') }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{ html()->form()->close() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endauth
+                                @guest
+                                <div class="col-4 align-self-center">
+                                    <p>
+                                        <a href="{{route('frontend.auth.login')}}?redirectTo={{url()->current()}}" class="btn btn-primary btn-lg btn-block"><i class="fas fa-user-shield"></i> Login & Write new comment</a>
+                                    </p>
+                                </div>
+                                @endguest
+
+
+
+                        </div>
+
+
+                        <p class="card-text">
+                            <small class="text-muted">{{$$module_name_singular->published_at_formatted}}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@endsection
