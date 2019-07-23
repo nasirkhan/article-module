@@ -17,15 +17,14 @@ Posts
             </h1>
 
             <div class="text-center">
-                <a href="#pablo" class="btn btn-primary btn-icon btn-round">
-                    <i class="fab fa-facebook-square"></i>
-                </a>
-                <a href="#pablo" class="btn btn-primary btn-icon btn-round">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#pablo" class="btn btn-primary btn-icon btn-round">
-                    <i class="fab fa-google-plus"></i>
-                </a>
+                @php $title_text = 'Tags - Mukto Library'; @endphp
+
+                <button class="btn btn-primary btn-icon btn-round" data-sharer="facebook" data-hashtag="MuktoLibrary" data-url="{{url()->full()}}" data-toggle="tooltip" title="Share on Facebook" data-original-title="Share on Facebook"><i class="fab fa-facebook-square"></i></button>
+
+                <button class="btn btn-primary btn-icon btn-round" data-sharer="twitter" data-via="MuktoLibrary" data-title="{{$title_text}}" data-hashtags="MuktoLibrary" data-url="{{url()->full()}}" data-toggle="tooltip" title="Share on Twitter" data-original-title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+
+                <button class="btn btn-primary btn-icon btn-round" data-sharer="whatsapp" data-title="{{$title_text}}" data-url="{{url()->full()}}" data-toggle="tooltip" title="Share on Whatsapp" data-original-title="Share on Whatsapp" data-web=""><i class="fab fa-whatsapp"></i></button>
+
             </div>
         </div>
     </div>
@@ -49,7 +48,7 @@ Posts
                             <h4 class="card-title">{{$$module_name_singular->name}}</h4>
                         </a>
                         <h6 class="card-subtitle mb-2 text-muted">
-                            {{$$module_name_singular->author_name}}
+                            {!!isset($$module_name_singular->created_by_alias)? $$module_name_singular->created_by_alias : '<a href="'.route('frontend.users.profile', $$module_name_singular->created_by).'">'.$$module_name_singular->created_by_name.'</a>'!!}
                         </h6>
                         <hr>
                         <p class="card-text">
@@ -77,7 +76,7 @@ Posts
                             <div class="row">
                                 <div class="col">
                                     <div class="float-right">
-                                        <a href="{{$post_details_url}}" class="btn btn-primary">Continue Reading</a>
+                                        <a href="{{$post_details_url}}" class="btn btn-primary"><i class="fas fa-long-arrow-alt-right"></i> Continue Reading</a>
                                     </div>
                                 </div>
                             </div>

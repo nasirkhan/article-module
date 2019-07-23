@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-6">
+    <div class="col-5">
         <div class="form-group">
             <?php
             $field_name = 'name';
@@ -12,12 +12,25 @@
         </div>
     </div>
 
-    <div class="col-6">
+    <div class="col">
         <div class="form-group">
             <?php
             $field_name = 'slug';
             $field_lable = label_case($field_name);
             $field_placeholder = $field_lable;
+            $required = "";
+            ?>
+            {{ html()->label($field_lable, $field_name) }} {!! fielf_required($required) !!}
+            {{ html()->text($field_name)->placeholder($field_placeholder)->class('form-control')->attributes(["$required"]) }}
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="form-group">
+            <?php
+            $field_name = 'created_by_alias';
+            $field_lable = "Author Name Alias";
+            $field_placeholder = "Hide Author User's Name and use Alias";
             $required = "";
             ?>
             {{ html()->label($field_lable, $field_name) }} {!! fielf_required($required) !!}
@@ -80,7 +93,7 @@
             $field_lable = "Category";
             $field_relation = "category";
             $field_placeholder = "-- Select an option --";
-            $required = "";
+            $required = "required";
             ?>
             {{ html()->label($field_lable, $field_name) }} {!! fielf_required($required) !!}
             {{ html()->select($field_name, isset($$module_name_singular)?optional($$module_name_singular->$field_relation)->pluck('name', 'id'):'')->placeholder($field_placeholder)->class('form-control select2-category')->attributes(["$required"]) }}

@@ -16,7 +16,7 @@ class Post extends BaseModel
 
     protected static $logName = 'posts';
     protected static $logOnlyDirty = true;
-    protected static $logAttributes = ['name', 'intro', 'content', 'type', 'category_id', 'category_name', 'is_featured', 'meta_title', 'meta_keywords', 'meta_description', 'published_at', 'moderated_at', 'moderated_by', 'status'];
+    protected static $logAttributes = ['name', 'intro', 'content', 'type', 'category_id', 'category_name', 'is_featured', 'meta_title', 'meta_keywords', 'meta_description', 'published_at', 'moderated_at', 'moderated_by', 'status', 'created_by_alias'];
 
     public function category()
     {
@@ -53,6 +53,15 @@ class Post extends BaseModel
             $this->attributes['category_name'] = $category->name;
         } catch (\Exception $e) {
             $this->attributes['category_name'] = null;
+        }
+    }
+
+    public function setCreatedByNameAttribute($value)
+    {
+        $this->attributes['created_by_name'] = trim(label_case($value));
+
+        if (empty($value)) {
+            $this->attributes['created_by_name'] = auth()->user()->name;
         }
     }
 
@@ -126,7 +135,7 @@ class Post extends BaseModel
     public function scopePublished($query)
     {
         return $query->where('status', '=', '1')
-                        ->whereDate('published_at', '<=', Carbon::today()->toDateString());
+                        ->where('published_at', '<=', Carbon::now());
     }
 
     /**
